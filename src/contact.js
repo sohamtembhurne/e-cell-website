@@ -1,5 +1,5 @@
 import './contact.css';
-import { useState } from "react";
+import React, { useState } from "react";
 
 
 const Contact = () => {
@@ -21,17 +21,17 @@ const Contact = () => {
         setUserData({ ...userData, [name]: value })
     };
     
-    const submitData = async (event) => {
+    const submitData =  (event) => {
         // if i keep this function, the form is not able to submit
         // but still after posting the data, page shows cannot post but data is submitted to the database
-        // event.preventdefault();
+        // event.preventdefault();  
         const { userName, email, subject, message } = userData;
         
         if (userName && email && subject && message) {
             const res = fetch(
                 "https://contact-form-5db31-default-rtdb.firebaseio.com/users.json",
                 {
-                    method: "post",
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -68,7 +68,7 @@ const Contact = () => {
             >Leave a message to contact our team
             </p>
             <div className="form_con">
-                <form method="post">
+                <form method="POST" onSubmit={submitData}>
                     <div className="col-1" style={{ display: "inline-block" }}>
                         <fieldset>
                             <input
@@ -109,7 +109,7 @@ const Contact = () => {
                             ></textarea>
                         </fieldset>
                     </div>
-                    <button type="submit" onClick={submitData} >Send Message</button>
+                    <button type="submit" >Send Message</button>
                 </form>
             </div>
             <br></br>
