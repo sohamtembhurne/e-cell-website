@@ -9,24 +9,20 @@ const Contact = () => {
         subject: "",
         message: "",
     });
-    
-    
-    
+
     let name, value;
     const postUserData = (event) => {
-        console.log("data posted\n");
         name = event.target.name;
         value = event.target.value;
-        
-        setUserData({ ...userData, [name]: value })
+
+        setUserData({ ...userData, [name]: value });
     };
-    
-    const submitData =  (event) => {
-        // if i keep this function, the form is not able to submit
-        // but still after posting the data, page shows cannot post but data is submitted to the database
-        // event.preventdefault();  
+
+    // connect with firebase
+    const submitData = async (event) => {
+        event.preventDefault();
         const { userName, email, subject, message } = userData;
-        
+
         if (userName && email && subject && message) {
             const res = fetch(
                 "https://contact-form-5db31-default-rtdb.firebaseio.com/users.json",
@@ -36,24 +32,29 @@ const Contact = () => {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        userName, email, subject, message,
+                        userName,
+                        email,
+                        subject,
+                        message,
                     }),
+                }
+            );
+
+            if (res) {
+                setUserData({
+                    userName: "",
+                    email: "",
+                    subject: "",
+                    message: "",
                 });
-                
-                if (res) {
-                    setUserData({
-                        userName: "",
-                        email: "",
-                        subject: "",
-                        message: "",
-                    });
-                alert("Data stored, we will contact you soon");
+                alert("Data Stored");
+            } else {
+                alert("plz fill the data");
             }
         } else {
-            alert("Please fill the form completely");
+            alert("plz fill the data");
         }
     };
-
 
     return (
         <div className="mainb">
@@ -78,14 +79,16 @@ const Contact = () => {
                                 placeholder="Name"
                                 value={userData.userName}
                                 onChange={postUserData}
+                                required
                             ></input>
                             <input
                                 name="email"
-                                type="text"
+                                type="email"
                                 className="input_con"
                                 placeholder="Email"
                                 value={userData.email}
                                 onChange={postUserData}
+                                required
                             ></input>
                             <input
                                 name="subject"
@@ -94,6 +97,7 @@ const Contact = () => {
                                 placeholder="Subject"
                                 value={userData.subject}
                                 onChange={postUserData}
+                                required
                             ></input>
                         </fieldset>
                     </div>
@@ -106,6 +110,7 @@ const Contact = () => {
                                 placeholder="Message"
                                 value={userData.message}
                                 onChange={postUserData}
+                                required
                             ></textarea>
                         </fieldset>
                     </div>
@@ -115,6 +120,6 @@ const Contact = () => {
             <br></br>
         </div>
     );
-}
+};
 
 export default Contact;
