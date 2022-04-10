@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const Contact = () => {
     const [userData, setUserData] = useState({
-        name: "",
+        userName: "",
         email: "",
         subject: "",
         message: "",
@@ -12,28 +12,37 @@ const Contact = () => {
 
     let name, value;
     const postUserData = (event) => {
+        console.log("data posted\n");
         name = event.target.name;
         value = event.target.value;
 
         setUserData({ ...userData, [name]: value })
     };
 
-    const submitData = async (e) => {
-        e.preventdefault();
-        const { name, email, subject, message } = userData;
+    const submitData = async (event) => {
+        // if i keep this function, the form is not able to submit
+        // but still after posting the data, page shows cannot post but data is submitted to the database
+        // event.preventdefault();
+        const { userName, email, subject, message } = userData;
         const res = fetch(
             "https://contact-form-5db31-default-rtdb.firebaseio.com/users.json",
             {
-                method: "POST",
+                method: "post",
                 headers: {
-                    "Content:Type": "application/json",
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name, email, subject, message
+                    userName, email, subject, message,
                 }),
             }
         );
         if (res) {
+            setUserData({
+                userName: "",
+                email: "",
+                subject: "",
+                message: "",
+            });
             alert("Data stored, we will contact you soon");
         } else {
             alert("Please fill the form completely");
@@ -53,15 +62,15 @@ const Contact = () => {
             >Leave a message to contact our team
             </p>
             <div className="form_con">
-                <form method="POST">
+                <form method="post">
                     <div className="col-1" style={{ display: "inline-block" }}>
                         <fieldset>
                             <input
-                                name="name"
+                                name="userName"
                                 type="text"
                                 className="input_con"
                                 placeholder="Name"
-                                value={userData.name}
+                                value={userData.userName}
                                 onChange={postUserData}
                             ></input>
                             <input
