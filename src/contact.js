@@ -1,6 +1,7 @@
 import './contact.css';
 import { useState } from "react";
 
+
 const Contact = () => {
     const [userData, setUserData] = useState({
         userName: "",
@@ -8,46 +9,51 @@ const Contact = () => {
         subject: "",
         message: "",
     });
-
-
+    
+    
+    
     let name, value;
     const postUserData = (event) => {
         console.log("data posted\n");
         name = event.target.name;
         value = event.target.value;
-
+        
         setUserData({ ...userData, [name]: value })
     };
-
+    
     const submitData = async (event) => {
         // if i keep this function, the form is not able to submit
         // but still after posting the data, page shows cannot post but data is submitted to the database
         // event.preventdefault();
         const { userName, email, subject, message } = userData;
-        const res = fetch(
-            "https://contact-form-5db31-default-rtdb.firebaseio.com/users.json",
-            {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    userName, email, subject, message,
-                }),
+        
+        if (userName && email && subject && message) {
+            const res = fetch(
+                "https://contact-form-5db31-default-rtdb.firebaseio.com/users.json",
+                {
+                    method: "post",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        userName, email, subject, message,
+                    }),
+                });
+                
+                if (res) {
+                    setUserData({
+                        userName: "",
+                        email: "",
+                        subject: "",
+                        message: "",
+                    });
+                alert("Data stored, we will contact you soon");
             }
-        );
-        if (res) {
-            setUserData({
-                userName: "",
-                email: "",
-                subject: "",
-                message: "",
-            });
-            alert("Data stored, we will contact you soon");
         } else {
             alert("Please fill the form completely");
         }
     };
+
 
     return (
         <div className="mainb">
